@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { Task, User, CreateTaskPayload, UpdateTaskPayload, LoginPayload, RegisterPayload, LoginResponse, ReorderPayload } from '../types';
 
-const BASE_URL = 'http://localhost:3333';
+const BASE_URL = 'https://todolist-production-a894.up.railway.app';
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
