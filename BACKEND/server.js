@@ -87,6 +87,27 @@ server.post("/login", async (request, reply) => {
     });
 });
 
+// Verifica se um e-mail está cadastrado (usado na recuperação de senha)
+server.get("/check-email", async (request, reply) => {
+  const { email } = request.query;
+  if (!email) return reply.status(400).send({ error: "Email é obrigatório." });
+  const user = await db.getUserByEmail(email);
+  if (!user) return reply.status(404).send({ error: "E-mail não cadastrado." });
+  return reply.status(200).send({ exists: true });
+});
+
+// Recuperação de senha (simples, sem email)
+server.post("/recover-password", async (request, reply) => {
+  const {email, newPassword} = request.body;
+
+  try {
+    await db.recoverPassword(email, newPassword);
+    return reply.send({ message: "Senha atualizada com sucesso." });
+  } catch (error) {
+    return reply.status(500).send({ error: "Erro ao atualizar senha." });
+  }
+});
+
 /**
  * Dados do usuário autenticado (usado para sincronização de tema entre dispositivos)
  */

@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { LoginPayload, RegisterPayload } from '../types';
 
 export const LoginPage: React.FC = () => {
   const { login, register: registerUser, isLoading, error } = useAuth();
   const [isRegister, setIsRegister] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const location = useLocation();
+  const passwordReset = (location.state as { passwordReset?: boolean } | null)?.passwordReset;
 
   const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<LoginPayload & RegisterPayload>();
   const watchPassword = watch('password', '');
@@ -94,18 +98,38 @@ export const LoginPage: React.FC = () => {
             <label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Senha
             </label>
-            <input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              placeholder="••••••••"
-              {...register('password', {
-                required: 'Senha é obrigatória',
-                minLength: { value: 8, message: 'Mínimo de 8 caracteres' },
-                pattern: { value: /[A-Z]/, message: 'Deve conter uma letra maiúscula' },
-              })}
-              className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
-            />
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                placeholder="••••••••"
+                {...register('password', {
+                  required: 'Senha é obrigatória',
+                  minLength: { value: 8, message: 'Mínimo de 8 caracteres' },
+                  pattern: { value: /[A-Z]/, message: 'Deve conter uma letra maiúscula' },
+                })}
+                className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(v => !v)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
+                aria-label={showPassword ? 'Esconder senha' : 'Mostrar senha'}
+              >
+                {showPassword ? (
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
+                    <line x1="1" y1="1" x2="23" y2="23" strokeLinecap="round" />
+                  </svg>
+                ) : (
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                )}
+              </button>
+            </div>
             {errors.password && (
               <span className="text-xs text-red-500">{errors.password.message}</span>
             )}
@@ -136,6 +160,13 @@ export const LoginPage: React.FC = () => {
             )}
           </div>
 
+          {/* Sucesso na redefinição de senha */}
+          {passwordReset && (
+            <div className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400">
+              Senha redefinida com sucesso! Faça login com a nova senha.
+            </div>
+          )}
+
           {/* Erro da API */}
           {error && (
             <div className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
@@ -163,12 +194,22 @@ export const LoginPage: React.FC = () => {
           </button>
         </form>
 
-        <button
-          onClick={toggleMode}
-          className="mt-4 text-sm text-blue-600 hover:underline dark:text-blue-400"
-        >
-          {isRegister ? 'Já tem conta? Faça login' : 'Não tem conta? Registre-se'}
-        </button>
+        <div className="mt-4 flex flex-col items-center gap-2">
+          <button
+            onClick={toggleMode}
+            className="text-sm text-blue-600 hover:underline dark:text-blue-400"
+          >
+            {isRegister ? 'Já tem conta? Faça login' : 'Não tem conta? Registre-se'}
+          </button>
+          {!isRegister && (
+            <Link
+              to="/forgot-password"
+              className="text-sm text-gray-500 hover:underline dark:text-gray-400"
+            >
+              Esqueceu a senha?
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );

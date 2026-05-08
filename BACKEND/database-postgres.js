@@ -112,6 +112,15 @@ export class databasePostgres {
         return user;
     }
 
+    async recoverPassword(email, newPassword) { 
+        const password_hash = await bcrypt.hash(newPassword, 10);
+        await sql`
+            UPDATE users
+            SET password_hash = ${password_hash}
+            WHERE email = ${email}
+        `;
+    }
+
     async updateTheme(userId, darkMode) {
         await sql`
             UPDATE users

@@ -86,3 +86,11 @@ export const unarchiveTask = async (id: string): Promise<Task> => {
   const { data } = await apiClient.patch<Task>(`/tasks/${id}/unarchive`);
   return data;
 };
+
+export const checkEmail = async (email: string): Promise<void> => {
+  await apiClient.get('/check-email', { params: { email } });
+};
+
+export const recoverPassword = async (email: string, newPassword: string): Promise<void> => {
+  await apiClient.post('/recover-password', { email, newPassword });
+};
