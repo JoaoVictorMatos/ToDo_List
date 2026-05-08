@@ -46,8 +46,9 @@ export const useAuth = () => {
       await apiRegister(payload);
       // After register, auto login
       await login({ email: payload.email, password: payload.password });
-    } catch {
-      setError('Erro ao registrar. Tente novamente.');
+    } catch (err: any) {
+      const errorMessage = err?.response?.data?.error || 'Erro ao registrar. Tente novamente.';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

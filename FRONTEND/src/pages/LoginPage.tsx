@@ -7,7 +7,8 @@ export const LoginPage: React.FC = () => {
   const { login, register: registerUser, isLoading, error } = useAuth();
   const [isRegister, setIsRegister] = useState(false);
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<LoginPayload & RegisterPayload>();
+  const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<LoginPayload & RegisterPayload>();
+  const watchPassword = watch('password', '');
 
   const onSubmit = (data: LoginPayload & RegisterPayload) => {
     if (isRegister) {
@@ -100,12 +101,38 @@ export const LoginPage: React.FC = () => {
               placeholder="••••••••"
               {...register('password', {
                 required: 'Senha é obrigatória',
-                minLength: { value: 6, message: 'Mínimo de 6 caracteres' },
+                minLength: { value: 8, message: 'Mínimo de 8 caracteres' },
+                pattern: { value: /[A-Z]/, message: 'Deve conter uma letra maiúscula' },
               })}
               className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
             />
             {errors.password && (
               <span className="text-xs text-red-500">{errors.password.message}</span>
+            )}
+            
+            {/* Dicas de Senha - Apenas em Registro */}
+            {isRegister && watchPassword && (
+              <div className="mt-2 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+                <p className="mb-2 text-xs font-medium text-blue-900 dark:text-blue-300">Requisitos da senha:</p>
+                <ul className="flex flex-col gap-1 text-xs text-blue-800 dark:text-blue-200">
+                  <li className={`flex items-center gap-2 ${watchPassword.length >= 8 ? 'text-green-600 dark:text-green-400' : 'text-blue-800 dark:text-blue-200'}`}>
+                    <span>{watchPassword.length >= 8 ? '✓' : '○'}</span>
+                    Mínimo 8 caracteres
+                  </li>
+                  <li className={`flex items-center gap-2 ${/[A-Z]/.test(watchPassword) ? 'text-green-600 dark:text-green-400' : 'text-blue-800 dark:text-blue-200'}`}>
+                    <span>{/[A-Z]/.test(watchPassword) ? '✓' : '○'}</span>
+                    Uma letra maiúscula
+                  </li>
+                  <li className={`flex items-center gap-2 ${/[a-z]/.test(watchPassword) ? 'text-green-600 dark:text-green-400' : 'text-blue-800 dark:text-blue-200'}`}>
+                    <span>{/[a-z]/.test(watchPassword) ? '✓' : '○'}</span>
+                    Uma letra minúscula
+                  </li>
+                  <li className={`flex items-center gap-2 ${/[^A-Za-z0-9]/.test(watchPassword) ? 'text-green-600 dark:text-green-400' : 'text-blue-800 dark:text-blue-200'}`}>
+                    <span>{/[^A-Za-z0-9]/.test(watchPassword) ? '✓' : '○'}</span>
+                    Um caractere especial (!@#$%^&*)
+                  </li>
+                </ul>
+              </div>
             )}
           </div>
 

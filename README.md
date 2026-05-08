@@ -3,7 +3,6 @@ Esta é uma aplicação de gerenciamento de tarefas completa, focada em experiê
 
 ![alt text](./IMG/image.png)
 
-
 🔗 Links Úteis
 Live Demo: https://to-do-list-one-tau-59.vercel.app/
 
@@ -41,9 +40,9 @@ Fastify JWT: Implementação de tokens de autenticação.
 O projeto segue uma estrutura de Monorepo:
 
 Plaintext
-├── BACKEND/         # API Fastify, Schema do banco e rotas
-├── FRONTEND/        # Aplicação React, Componentes e Serviços
-└── .gitignore       # Configuração global de segurança
+├── BACKEND/ # API Fastify, Schema do banco e rotas
+├── FRONTEND/ # Aplicação React, Componentes e Serviços
+└── .gitignore # Configuração global de segurança
 ⚙️ Como rodar o projeto localmente
 Clone o repositório:
 
@@ -78,4 +77,4 @@ Estudante de Sistemas de Informação na UFLA.
 
 Focado em Automaçãoe Desenvolvimento Fullstack.
 
-[LinkedIn](www.linkedin.com/in/joaomatos02)
+[LinkedIn](https://linkedin.com/in/joaomatos02)
